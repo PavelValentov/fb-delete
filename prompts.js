@@ -35,18 +35,34 @@ var categories = ["Posts",
   "Saved",
   "Apps"];
 
+// var questions = [
+//     {
+//       type: 'input',
+//       name: 'username',
+//       message: 'Please enter your Facebook username (email address):'
+//     },
+//     {
+//       type: 'password',
+//       message: 'Please enter your Facebook password:',
+//       name: 'password',
+//       mask: '*'
+//     },
+//     {
+//       type: 'checkbox',
+//       name: 'categories',
+//       message: 'Select the categories you\'d like to delete:',
+//       paginated: false,
+//       choices: categories
+//     },
+//     {
+//       type: 'checkbox',
+//       name: 'years',
+//       message: "Select the years you\'d like to delete:",
+//       paginated: false,
+//       choices: years
+//     }
+// ];
 var questions = [
-    {
-      type: 'input',
-      name: 'username',
-      message: 'Please enter your Facebook username (email address):'
-    },
-    {
-      type: 'password',
-      message: 'Please enter your Facebook password:',
-      name: 'password',
-      mask: '*'
-    },
     {
       type: 'checkbox',
       name: 'categories',

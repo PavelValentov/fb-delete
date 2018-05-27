@@ -8,6 +8,11 @@ async function main() {
 
   let answers = await prompts();
 
+  answers.username = '';
+  answers.password = '';
+
+  console.log('answers', answers);
+
   const browser = await puppeteer.launch({
     headless: false,
     slowMo: 100
@@ -20,6 +25,7 @@ async function main() {
   await page.$eval('input[name=login]', button => button.click());
   await page.goto('https://mbasic.facebook.com/');
 
+  console.log('answers', answers);
   await next(answers.categories, answers.years);
 }
 
@@ -34,9 +40,11 @@ async function next(categories, years) {
     for (let j in years) {
       console.log("In year " + years[j]);
       try {
-        await followLinkByContent(years[j]);
+        if (years[j] !== 2018) {
+          await followLinkByContent(years[j]);
+        }
         await deleteYear(years[j]);
-      } catch(e) {
+      } catch (e) {
         console.log(`Year ${years[j]} not found.`, e);
       }
     }
@@ -55,24 +63,24 @@ async function deletePosts() {
     const deleteElements = document.querySelectorAll('a[href*="allactivity/delete"]');
     const removeElements = document.querySelectorAll('a[href*="allactivity/removecontent"]');
     for (const el of deleteElements) {
-        links.push(el.href);
+      links.push(el.href);
     }
     for (const el of removeElements) {
-        links.push(el.href);
+      links.push(el.href);
     }
     return links;
   });
   // visit them all to delete content
   for (let i = 0; i < deleteLinks.length; i++) {
-      await page.goto(deleteLinks[i]);
+    await page.goto(deleteLinks[i]);
   }
 }
 
 
 async function getMonthLinks(year) {
   var monthLinks = await page.evaluate((year) => {
-    var months = ["January", "February", "March", "April", "May", "June", 
-      "July", "August", "September", "October", "November", "December"];
+    var months = ["January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December", "This Month"];
     var links = [];
     const elements = document.querySelectorAll('a');
     for (let el of elements) {
@@ -88,7 +96,10 @@ async function getMonthLinks(year) {
 }
 
 async function followLinkByContent(content) {
+  // console.log('+++ content', content);
   var link = await page.evaluate((text) => {
+    // console.log('+++ text', text);
+
     const aTags = document.querySelectorAll('a');
     for (let aTag of aTags) {
       if (aTag.innerText === text) {
@@ -96,7 +107,10 @@ async function followLinkByContent(content) {
       }
     }
   }, content);
-  await page.goto(link);
+  if (link) {
+    console.log('link:', link);
+    await page.goto(link);
+  }
 }
 
 async function deleteYear(year) {
